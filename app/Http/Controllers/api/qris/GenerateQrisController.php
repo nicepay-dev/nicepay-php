@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\api\qris;
 
 use App\Http\Controllers\Controller;
+use App\Models\Helper\HttpUtil;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -11,9 +13,13 @@ use Carbon\Carbon;
 
 class GenerateQrisController extends Controller
 {
-    protected $partner_id = ""; //String partner id / merchantId
-    protected $domain = "https://dev.nicepay.co.id/nicepay";
-    protected $end_point_generate = "/api/v1.0/qr/qr-mpm-generate";
+    // Generate QRIS Endpoint
+    protected $useProd = false;
+    protected $useCloud = false;
+    protected $create_qris_endpoint = "/api/v1.0/qr/qr-mpm-generate";
+
+    // Credential
+    protected $client_id = ""; //String partner id / merchantId
     PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
     "" . // string private key
     "\r\n" .
@@ -24,11 +30,11 @@ class GenerateQrisController extends Controller
 
     // for amount
     PROTECTED $amt = "100.00";
-    /* 
-     * if want to partial refund (not full partial), 
-     * need to change amount manual in refundQris function 
+    /*
+     * if want to partial refund (not full partial),
+     * need to change amount manual in refundQris function
      * */
-    PROTECTED $cancel_type = 1; 
+    PROTECTED $cancel_type = 1;
 
     /**
      * Create a new controller instance.
@@ -42,11 +48,12 @@ class GenerateQrisController extends Controller
 
     /**
      * generate transaction qris
-     * 
-     * @return json
+     *
+     * @return JsonResponse
      */
-    public function generateQris()
+    public function generateQris(): JsonResponse
     {
+        $url = HttpUtil::getNicepayDomain($this->useProd, $this->useCloud) . $this->create_qris_endpoint;
         $helper = new Helpers();
 
         $http_method = "POST";
@@ -56,7 +63,7 @@ class GenerateQrisController extends Controller
         $validity_period = $date->addMinutes("5")->addSeconds("30")->toIso8601String();
 
 
-        $partner_id = $this->partner_id; //merchantId
+        $partner_id = $this->client_id; //merchantId
         $client_secret = $this->client_secret;
         $access_token = $this->access_token;
         $store_id = $this->store_id;
@@ -68,7 +75,7 @@ class GenerateQrisController extends Controller
         $totalAmount = [
             "value" => $this->amt,
             "currency" => "IDR"
-        ];     
+        ];
 
         $cartData = [
             "count" => "1",
@@ -80,7 +87,7 @@ class GenerateQrisController extends Controller
                 "goods_quantity" => "1"
             ]
         ];
-        
+
         $additionalInfo = [
             "goodsNm" => "QRIS",
             "billingNm" => "QRIS",
@@ -103,61 +110,41 @@ class GenerateQrisController extends Controller
             "merchantId" => $partner_id,
             "storeId" => $store_id,
             // "validityPeriod" => "", //optional, if not used, will set default setting from nicepay 5 minutes
-            "validityPeriod" => $validity_period, //optional, if not used, will set default setting from nicepay 5 
+            "validityPeriod" => $validity_period, //optional, if not used, will set default setting from nicepay 5
             "additionalInfo" => $additionalInfo
         ];
 
         $string_to_sign = $helper->generateStringToSign(
-                $http_method, 
-                $this->end_point_generate, 
-                $access_token, 
-                $body, 
+                $http_method,
+                $this->create_qris_endpoint,
+                $access_token,
+                $body,
                 $x_time_stamp
             );
 
         $signature = $helper->hmacSHA512Encoded(
-                $string_to_sign, 
-                $client_secret, 
+                $string_to_sign,
+                $client_secret,
                 OPENSSL_ALGO_SHA512
             );
 
         $header = $helper->generateHeader(
-                $access_token, 
-                $x_time_stamp, 
-                $signature, 
-                $partner_id, 
+                $access_token,
+                $x_time_stamp,
+                $signature,
+                $partner_id,
                 $external_id,
                 $partner_id . "08"
             );
-        print_r($string_to_sign); 
-        
+
+        print_r($string_to_sign);
         print_r("\r\n");
-        
         print_r($header);
         print_r($body);
 
         try {
-            $response = Http::withHeaders($header)->post($this->domain . $this->end_point_generate, $body);
-
-            
-            $obj_response = $response->object();
-
-            // dd($obj_response);
-
-            
-            $result = [
-                "responseCode" => $obj_response->responseCode,
-                "responseMessage" => $obj_response->responseMessage,
-                "referenceNo" => $obj_response->referenceNo,
-                "partnerReferenceNo" => $obj_response->partnerReferenceNo,
-                "validityPeriod" => $obj_response->additionalInfo->validityPeriod,
-                "qrUrl" => $obj_response->qrUrl
-            ];
-
+            $response = HttpUtil::postJsonRequestWithHeader($url, $body, $header);
         } catch (\Throwable $th) {
-            throw $th;
-            // print_r($th);
-
             return response()->json([
                 'status' => 500,
                 'message' => "Internal Server Error",
@@ -168,7 +155,7 @@ class GenerateQrisController extends Controller
         return response()->json([
             'status' => $response->status(),
             'message' => $response->successful(),
-            'data' => $result
-        ])->setEncodingOptions(JSON_UNESCAPED_SLASHES);
+            'data' => $response
+        ]);
     }
 }

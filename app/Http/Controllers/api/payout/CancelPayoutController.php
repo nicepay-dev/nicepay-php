@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\api\payout;
 
 use App\Http\Controllers\Controller;
+use App\Models\Helper\HttpUtil;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
 
@@ -11,10 +12,13 @@ use Carbon\Carbon;
 
 class CancelPayoutController extends Controller
 {
+    // Cancel Payout Endpoint
+    protected $useProd = false;
+    protected $useCloud = false;
+    protected $cancel_payout_endpoint = "/api/v1.0/transfer/cancel";
 
-    protected $partner_id = ""; //String partner id / merchantId
-    protected $domain = "https://dev.nicepay.co.id/nicepay";
-    protected $end_point_cancel = "/api/v1.0/transfer/cancel";
+    // Credential
+    protected $client_id = "NORMALTEST"; //String partner id / merchantId
     PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
     "" . // string private key
     "\r\n" .
@@ -25,11 +29,11 @@ class CancelPayoutController extends Controller
 
     // for amount
     PROTECTED $amt = "100.00";
-    /* 
-     * if want to partial refund (not full partial), 
-     * need to change amount manual in refundQris function 
+    /*
+     * if want to partial refund (not full partial),
+     * need to change amount manual in refundQris function
      * */
-    PROTECTED $cancel_type = 1; 
+    PROTECTED $cancel_type = 1;
 
     /**
      * Create a new controller instance.
@@ -44,10 +48,12 @@ class CancelPayoutController extends Controller
     /**
      * cancel payout transaction
      *
-     * @return json
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function cancelPayout()
+    public function cancelPayout(): \Illuminate\Http\JsonResponse
     {
+        $url = HttpUtil::getNicepayDomain($this->useProd, $this->useCloud) . $this->cancel_payout_endpoint;
+
         $helper = new Helpers();
 
         $http_method = "POST";
@@ -55,7 +61,7 @@ class CancelPayoutController extends Controller
         $x_time_stamp = $date->toIso8601String();
         $time_stamp = $date->format("YmdHis");
 
-        $partner_id = $this->partner_id; //merchantId
+        $partner_id = $this->client_id; //merchantId
         $client_secret = $this->client_secret;
         $access_token = $this->access_token;
 
@@ -70,44 +76,36 @@ class CancelPayoutController extends Controller
         ];
 
         $string_to_sign = $helper->generateStringToSign(
-                $http_method, 
-                $this->end_point_cancel, 
-                $access_token, 
-                $body, 
+                $http_method,
+                $this->cancel_payout_endpoint,
+                $access_token,
+                $body,
                 $x_time_stamp
             );
 
         $signature = $helper->hmacSHA512Encoded(
-                $string_to_sign, 
-                $client_secret, 
+                $string_to_sign,
+                $client_secret,
                 OPENSSL_ALGO_SHA512
             );
 
         $header = $helper->generateHeader(
-                $access_token, 
-                $x_time_stamp, 
-                $signature, 
-                $partner_id, 
+                $access_token,
+                $x_time_stamp,
+                $signature,
+                $partner_id,
                 $external_id,
                 $partner_id . "08"
             );
-        print_r($string_to_sign); 
-        
+
+        print_r($string_to_sign);
         print_r("\r\n");
-        
         print_r($header);
         print_r($body);
 
         try {
-            $response = Http::withHeaders($header)->post($this->domain . $this->end_point_cancel, $body);
-
-            
-            $obj_response = $response->object();
-
+            $response = HttpUtil::postJsonRequestWithHeader($url, $body, $header);
         } catch (\Throwable $th) {
-            throw $th;
-            // print_r($th);
-
             return response()->json([
                 'status' => 500,
                 'message' => "Internal Server Error",
@@ -118,10 +116,8 @@ class CancelPayoutController extends Controller
         return response()->json([
             'status' => $response->status(),
             'message' => $response->successful(),
-            'data' => $obj_response
-        ])->setEncodingOptions(JSON_UNESCAPED_SLASHES);
+            'data' => $response
+        ]);
     }
-    
-}
 
-?>
+}

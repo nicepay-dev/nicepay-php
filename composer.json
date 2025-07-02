@@ -12,7 +12,9 @@
         "laravel/framework": "^8.75",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "nesbot/carbon": "^2.0"
+        "nesbot/carbon": "^2.0",
+        "ext-json": "*",
+        "ext-openssl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

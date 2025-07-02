@@ -3,19 +3,22 @@
 namespace App\Http\Controllers\api\ewallet;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
-
 use App\Models\Helper\Helpers;
+use App\Models\Helper\HttpUtil;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Str;
+use Throwable;
 
 
 class RefundEwalletController extends Controller
 {
+    // Inquiry Ewallet Endpoint
+    protected $useProd = false;
+    protected $useCloud = false;
+    protected $refund_ewallet_endpoint = "/api/v1.0/debit/refund";
 
     protected $partner_id = ""; // String partner id / merchantId
-    protected $domain = "https://dev.nicepay.co.id/nicepay";
-    protected $end_point_refund = "/api/v1.0/debit/refund";
     PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
     "" . // string private key
     "\r\n" .
@@ -26,11 +29,11 @@ class RefundEwalletController extends Controller
 
     // for amount
     PROTECTED $amt = "100.00";
-    /* 
-     * if want to partial refund (not full partial), 
-     * need to change amount manual in refundQris function 
+    /*
+     * if want to partial refund (not full partial),
+     * need to change amount manual in refundQris function
      * */
-    PROTECTED $cancel_type = 1; 
+    PROTECTED $cancel_type = 1;
 
     /**
      * Create a new controller instance.
@@ -44,11 +47,12 @@ class RefundEwalletController extends Controller
 
     /**
      * refund transaction ewallet
-     * 
-     * @return json
+     *
+     * @return JsonResponse
      */
-    public function refundEwallet()
+    public function refundEwallet(): JsonResponse
     {
+        $url = HttpUtil::getNicepayDomain($this->useProd, $this->useCloud) . $this->refund_ewallet_endpoint;
         $helper = new Helpers();
 
         $http_method = "POST";
@@ -64,11 +68,11 @@ class RefundEwalletController extends Controller
         $original_reference_no = "TNICEEW05105202408081348437590";
         $reference_no = "refNoEw20240808134839IXL1X";
         $partner_refund_no = "refndNoEw" . $time_stamp . Str::random(5);
-        
+
         $refundAmount = [
             "value" => "11.00",
             "currency" => "IDR"
-        ]; 
+        ];
 
         $additionalInfo = [
             "refundType" => $this->cancel_type
@@ -87,54 +91,48 @@ class RefundEwalletController extends Controller
         ];
 
         $string_to_sign = $helper->generateStringToSign(
-                $http_method, 
-                $this->end_point_refund, 
-                $access_token, 
-                $body, 
+                $http_method,
+                $this->refund_ewallet_endpoint,
+                $access_token,
+                $body,
                 $x_time_stamp
             );
 
         $signature = $helper->hmacSHA512Encoded(
-                $string_to_sign, 
-                $client_secret, 
+                $string_to_sign,
+                $client_secret,
                 OPENSSL_ALGO_SHA512
             );
 
         $header = $helper->generateHeader(
-                $access_token, 
-                $x_time_stamp, 
-                $signature, 
-                $partner_id, 
+                $access_token,
+                $x_time_stamp,
+                $signature,
+                $partner_id,
                 $external_id,
                 $partner_id . "08"
             );
-        print_r($string_to_sign); 
-        
+        print_r($string_to_sign);
+
         print_r("\r\n");
-        
+
         print_r($header);
         print_r($body);
 
         try {
-            $response = Http::withHeaders($header)->post($this->domain . $this->end_point_refund, $body);
-        } catch (\Throwable $th) {
-            throw $th;
-            // print_r($th);
-
+            $response = HttpUtil::postJsonRequestWithHeader($url, $body, $header);
+            return response()->json([
+                'status' => $response->status(),
+                'message' => $response->successful(),
+                'data' => $response
+            ]);
+        } catch (Throwable $th) {
             return response()->json([
                 'status' => 500,
                 'message' => "Internal Server Error",
                 'data' => $th
             ]);
         }
-
-        return response()->json([
-            'status' => $response->status(),
-            'message' => $response->successful(),
-            'data' => $response->object()
-        ])->setEncodingOptions(JSON_UNESCAPED_SLASHES);
-    }    
+    }
 
 }
-
-?>
