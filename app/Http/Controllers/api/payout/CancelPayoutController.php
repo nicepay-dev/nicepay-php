@@ -18,14 +18,11 @@ class CancelPayoutController extends Controller
     protected $cancel_payout_endpoint = "/api/v1.0/transfer/cancel";
 
     // Credential
-    protected $client_id = "NORMALTEST"; //String partner id / merchantId
-    PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
-    "" . // string private key
-    "\r\n" .
-    "-----END RSA PRIVATE KEY-----";
-    PROTECTED $client_secret = ""; // string credential
-    PROTECTED $access_token = ""; // String access token
-    PROTECTED $store_id = "";
+    protected $client_id = "CLIENT_KEY_MERCHANT";
+    PROTECTED $key = "_PRIVATE_KEY_MERCHANT"; // string private key
+
+    PROTECTED $client_secret = "_CLIENT_SECRET_MERCHANT"; // string CLIENT SECRET
+    PROTECTED $access_token = "_ACCESS_TOKEN_MERCHANT";
 
     // for amount
     PROTECTED $amt = "100.00";

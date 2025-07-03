@@ -21,8 +21,8 @@ class RedirectV2Controller extends Controller
     protected $cancel_endpoint = "/nicepay/direct/v2/cancel";
 
     // Credential
-    protected $imid = "NORMALTEST";
-    protected $mer_key = "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==";
+    protected $imid = "_IMID_MERCHANT";
+    protected $mer_key = "_MER_KEY_MERCHANT";
 
     // Constant
     protected $pay_method = "02";
@@ -66,6 +66,7 @@ class RedirectV2Controller extends Controller
             "currency" => "IDR",
             "bankCd" => "CENA",
             "amt" => $this->amt,
+            "mitraCd" => "",
             "referenceNo" => $reference_no,
             "merchantToken" => $merchant_token,
             "merFixAcctId" => $mer_fix,
@@ -76,7 +77,7 @@ class RedirectV2Controller extends Controller
             "sellers" => $sellers,
             "description" => "",
             "billingNm" => "John Test",
-            "billingPhone" => "6281288998899",
+            "billingPhone" => "",
             "billingEmail" => "omen@example.com",
             "billingAddr" => "Jln. Raya Kasablanka Kav.88",
             "billingCity" => "South Jakarta",
@@ -86,6 +87,11 @@ class RedirectV2Controller extends Controller
             "userIP" => "127.0.0.1",
             "vacctValidDt" => "",
             "vacctValidTm" => "",
+            "PayValidDt" => "",
+            "PayValidTm" => "",
+            "PaymentExpDt" => "",
+            "PaymentExpTm" => ""
+
 
         ];
 
@@ -108,9 +114,9 @@ class RedirectV2Controller extends Controller
 
         // Request body parameter
         $timestamp = Carbon::now()->format("YmdHis");
-        $txid = "NORMALTEST00202507011624435539";     // TODO : Fill with the registered transaction
-        $reference_no = "OrderNo5778";                // TODO : Fill with the registered transaction
-        $amt = $this->amt;                            // TODO : Fill with the registered transaction
+        $txid = "";                              // TODO : Fill with the registered transaction
+        $reference_no = "";                     // TODO : Fill with the registered transaction
+        $amt = $this->amt;                     // TODO : Fill with the registered transaction
         $merchant_token = $this->generateMerchantToken($timestamp, $this->imid, $reference_no, $this->amt, $this->mer_key);
 
         $body = [

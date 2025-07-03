@@ -18,10 +18,10 @@ class FixOpenV2Controller extends Controller
     protected $cust_update_endpoint = "/nicepay/api/vacctCustomerUpdate.do";
 
     // Credential
-    protected $imid = "TNICEVA021";
-    protected $mer_key = "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==";
+    protected $imid = "_IMID_MERCHANT";
+    protected $mer_key = "_MER_KEY_MERCHANT";
 
-    protected $customer_nm = "Harfa";
+    protected $customer_nm = "TESTING";
 
     /**
      * Create a new controller instance.

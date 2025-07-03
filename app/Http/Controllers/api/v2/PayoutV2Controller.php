@@ -24,8 +24,8 @@ class PayoutV2Controller extends Controller
     protected $balance_endpoint ="/nicepay/api/direct/v2/balanceInquiry";
 
     // Credential CC
-    protected $imid = "TNICEPO071";
-    protected $mer_key = "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==";
+    protected $imid = "_IMID_MERCHANT";
+    protected $mer_key = "_MER_KEY_MERCHANT";
 
     // Constant
     protected $payoutMethod = "1";

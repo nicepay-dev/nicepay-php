@@ -20,15 +20,11 @@ class InquiryEwalletController extends Controller
     protected $inquiry_ewallet_endpoint = "/api/v1.0/debit/status";
 
     // Credential
-    protected $client_id = "";
-
-    PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
-    "" . // string private key
-    "\r\n" .
-    "-----END RSA PRIVATE KEY-----";
-    PROTECTED $client_secret = ""; // string client secret
-    PROTECTED $access_token = ""; // string access token
-    PROTECTED $store_id = "";
+    protected $client_id = "CLIENT_KEY_MERCHANT";
+    PROTECTED $key = "_PRIVATE_KEY_MERCHANT"; // string private key
+    PROTECTED $client_secret = "_CLIENT_SECRET_MERCHANT"; // string CLIENT SECRET
+    PROTECTED $access_token = "_ACCESS_TOKEN_MERCHANT";
+    PROTECTED $store_id = "_STORE_ID_MERCHANT";
 
     /**
      * Create a new controller instance.

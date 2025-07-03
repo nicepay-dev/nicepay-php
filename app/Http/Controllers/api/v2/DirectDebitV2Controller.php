@@ -19,8 +19,8 @@ class DirectDebitV2Controller extends Controller
     protected $payment_endpoint ="/nicepay/direct/v2/payment";
 
     // Credential clickpay
-    protected $imid = "TNICECP041";
-    protected $mer_key = "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==";
+    protected $imid = "_IMID_MERCHANT";
+    protected $mer_key = "_MER_KEY_MERCHANT";
 
     // Constant
     protected $pay_method = "04";
@@ -68,7 +68,7 @@ class DirectDebitV2Controller extends Controller
             "goodsNm" => "Goods",
             "cartData" => $cartData,
             "billingNm" => "John Test",
-            "billingPhone" => "081363681274",
+            "billingPhone" => "",
             "billingEmail" => "omen@example.com",
             "billingAddr" => "Jln. Raya Kasablanka Kav.88",
             "billingCity" => "South Jakarta",

@@ -20,14 +20,11 @@ class GenerateVirtualAccountController extends Controller
     protected $create_va_endpoint = "/api/v1.0/transfer-va/create-va";
 
     // Credential
-    protected $client_id = "NORMALTEST";
-    PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
-    "MIICdgIBADANBgkqhkiG9w0BAQEFAASCAmAwggJcAgEAAoGBAInJe1G22R2fMchIE6BjtYRqyMj6lurP/zq6vy79WaiGKt0Fxs4q3Ab4ifmOXd97ynS5f0JRfIqakXDcV/e2rx9bFdsS2HORY7o5At7D5E3tkyNM9smI/7dk8d3O0fyeZyrmPMySghzgkR3oMEDW1TCD5q63Hh/oq0LKZ/4Jjcb9AgMBAAECgYA4Boz2NPsjaE+9uFECrohoR2NNFVe4Msr8/mIuoSWLuMJFDMxBmHvO+dBggNr6vEMeIy7zsF6LnT32PiImv0mFRY5fRD5iLAAlIdh8ux9NXDIHgyera/PW4nyMaz2uC67MRm7uhCTKfDAJK7LXqrNVDlIBFdweH5uzmrPBn77foQJBAMPCnCzR9vIfqbk7gQaA0hVnXL3qBQPMmHaeIk0BMAfXTVq37PUfryo+80XXgEP1mN/e7f10GDUPFiVw6Wfwz38CQQC0L+xoxraftGnwFcVN1cK/MwqGS+DYNXnddo7Hu3+RShUjCz5E5NzVWH5yHu0E0Zt3sdYD2t7u7HSr9wn96OeDAkEApzB6eb0JD1kDd3PeilNTGXyhtIE9rzT5sbT0zpeJEelL44LaGa/pxkblNm0K2v/ShMC8uY6Bbi9oVqnMbj04uQJAJDIgTmfkla5bPZRR/zG6nkf1jEa/0w7i/R7szaiXlqsIFfMTPimvRtgxBmG6ASbOETxTHpEgCWTMhyLoCe54WwJATmPDSXk4APUQNvX5rr5OSfGWEOo67cKBvp5Wst+tpvc6AbIJeiRFlKF4fXYTb6HtiuulgwQNePuvlzlt2Q8hqQ==" . // string private key
-    "\r\n" .
-    "-----END RSA PRIVATE KEY-----";
+    protected $client_id = "CLIENT_KEY_MERCHANT";
+    PROTECTED $key = "_PRIVATE_KEY_MERCHANT"; // string private key
 
-    PROTECTED $client_secret = "1af9014925cab04606b2e77a7536cb0d5c51353924a966e503953e010234108a"; // string CLIENT SECRET
-    PROTECTED $access_token = "";
+    PROTECTED $client_secret = "_CLIENT_SECRET_MERCHANT"; // string CLIENT SECRET
+    PROTECTED $access_token = "_ACCESS_TOKEN_MERCHANT";
 
     /**
      * Create a new controller instance.

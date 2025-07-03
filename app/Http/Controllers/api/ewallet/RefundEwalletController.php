@@ -18,14 +18,11 @@ class RefundEwalletController extends Controller
     protected $useCloud = false;
     protected $refund_ewallet_endpoint = "/api/v1.0/debit/refund";
 
-    protected $partner_id = ""; // String partner id / merchantId
-    PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
-    "" . // string private key
-    "\r\n" .
-    "-----END RSA PRIVATE KEY-----";
-    PROTECTED $client_secret = ""; // string client secret
-    PROTECTED $access_token = ""; // string access token
-    PROTECTED $store_id = "249668074512960";
+    protected $client_id = "CLIENT_KEY_MERCHANT";
+    PROTECTED $key = "_PRIVATE_KEY_MERCHANT"; // string private key
+    PROTECTED $client_secret = "_CLIENT_SECRET_MERCHANT"; // string CLIENT SECRET
+    PROTECTED $access_token = "_ACCESS_TOKEN_MERCHANT";
+    PROTECTED $store_id = "_STORE_ID_MERCHANT";
 
     // for amount
     PROTECTED $amt = "100.00";
@@ -59,7 +56,7 @@ class RefundEwalletController extends Controller
         $date = Carbon::now();
         $x_time_stamp = $date->toIso8601String();
         $time_stamp = $date->format("YmdHis");
-        $partner_id = $this->partner_id; //merchantId
+        $partner_id = $this->client_id; //merchantId
         $client_secret = $this->client_secret;
         $access_token = $this->access_token;
         $store_id = $this->store_id;

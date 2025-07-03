@@ -21,11 +21,12 @@ class QrisV2Controller extends Controller
     protected $cancel_endpoint = "/nicepay/direct/v2/cancel";
 
     // Credential
-    protected $imid = "IONPAYTEST";
-    protected $mer_key = "33F49GnCMS1mFYlGXisbUDzVf2ATWCl9k3R++d5hDd3Frmuos/XLx8XhXpe+LDYAbpGKZYSwtlyyLOtS/8aD7A==";
+    protected $imid = "_IMID_MERCHANT";
+    protected $mer_key = "_MER_KEY_MERCHANT";
     // Constant
     protected $pay_method = "08";
     protected $amt = "10000";
+    protected $shop_id = "_SHOP_ID_MERCHANT";
 
 
     /**
@@ -59,7 +60,7 @@ class QrisV2Controller extends Controller
             "iMid" => $this->imid,
             "payMethod" => $this->pay_method,
             "mitraCd" => "QSHP",
-            "shopId" => "NICEPAY",
+            "shopId" => $this->shop_id,
             "currency" => "IDR",
             "amt" => $this->amt,
             "referenceNo" => $reference_no,
@@ -67,7 +68,7 @@ class QrisV2Controller extends Controller
             "dbProcessUrl" => "https://webhook.site/90aa57b4-9bdd-4f3c-bf0a-ca35d78897b0",
             "goodsNm" => "Goods",
             "billingNm" => "John Test",
-            "billingPhone" => "081363681274",
+            "billingPhone" => "",
             "billingEmail" => "omen@example.com",
             "billingAddr" => "Jln. Raya Kasablanka Kav.88",
             "billingCity" => "South Jakarta",

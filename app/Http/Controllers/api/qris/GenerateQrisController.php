@@ -19,14 +19,11 @@ class GenerateQrisController extends Controller
     protected $create_qris_endpoint = "/api/v1.0/qr/qr-mpm-generate";
 
     // Credential
-    protected $client_id = ""; //String partner id / merchantId
-    PROTECTED $key = "-----BEGIN RSA PRIVATE KEY-----" . "\r\n" .
-    "" . // string private key
-    "\r\n" .
-    "-----END RSA PRIVATE KEY-----";
-    PROTECTED $client_secret = ""; // string credential
-    PROTECTED $access_token = "";
-    PROTECTED $store_id = "NICEPAY";
+    protected $client_id = "CLIENT_KEY_MERCHANT";
+    PROTECTED $key = "_PRIVATE_KEY_MERCHANT"; // string private key
+    PROTECTED $client_secret = "_CLIENT_SECRET_MERCHANT"; // string CLIENT SECRET
+    PROTECTED $access_token = "_ACCESS_TOKEN_MERCHANT";
+    PROTECTED $store_id = "_STORE_ID_MERCHANT";
 
     // for amount
     PROTECTED $amt = "100.00";
@@ -91,7 +88,7 @@ class GenerateQrisController extends Controller
         $additionalInfo = [
             "goodsNm" => "QRIS",
             "billingNm" => "QRIS",
-            "billingPhone" => "08123456789",
+            "billingPhone" => "",
             "billingEmail" => "email@qris.com",
             "billingCity" => "Jakarta Selatan",
             "billingState" => "Jakarta",
