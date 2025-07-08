@@ -143,7 +143,7 @@ class FixOpenV2Controller extends Controller
         $body = [
             "iMid" => $this->imid,
             "customerId" => $customer_id,
-            "customerNm" => "Parhan",
+            "customerNm" => "Testing",
             "merchantToken" => $merchant_token,
             "updateType" => $update_type,
         ];
